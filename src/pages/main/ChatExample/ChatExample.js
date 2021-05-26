@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import Navbar from "../../../components/Navbar";
-import styles from "./Chat.module.css";
+import styles from "./ChatExample.module.css";
 import { Container, Form, Row, Col } from "react-bootstrap";
 
-function Chat(props) {
+function ChatExample(props) {
   const username = localStorage.getItem("token");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
@@ -122,4 +122,4 @@ function Chat(props) {
   );
 }
 
-export default Chat;
+export default ChatExample;

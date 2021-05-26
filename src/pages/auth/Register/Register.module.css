@@ -22,13 +22,13 @@
   cursor: pointer;
 }
 
-h1 {
+.cardBody h1 {
   font-weight: 700;
   font-size: 22px;
   color: #7e98df;
 }
 
-h5 {
+.cardBody h5 {
   font-size: 14px;
   color: #232323;
   margin: 20px 0;
@@ -46,7 +46,7 @@ h5 {
   border-radius: 0;
 }
 
-h6 {
+.cardBody h6 {
   font-size: 16px;
   text-align: right;
   color: #7e98df;
@@ -60,7 +60,7 @@ h6 {
   border: 1px solid #7e98df;
 }
 
-h2 {
+.cardBody h2 {
   font-size: 16px;
   text-align: center;
   color: #848484 !important;
@@ -99,7 +99,7 @@ label {
   color: white;
 }
 
-h3 {
+.cardBody h3 {
   text-align: center;
   font-size: 14px;
   color: #313131;
@@ -110,8 +110,8 @@ span {
   color: #7e98df;
 }
 
-span:hover,
-h6:hover {
+.cardBody span:hover,
+.cardBody h6:hover {
   cursor: pointer;
   color: #2355df;
   font-weight: bold;

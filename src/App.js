@@ -8,8 +8,9 @@ import PrivateRoute from "./helpers/PrivateRoute";
 import PublicRoute from "./helpers/PublicRoute";
 
 import Login from "./pages/auth/Login/Login";
-import Chat from "./pages/main/Chat/Chat";
-import Counter from "./pages/main/Counter/CounterFunctional";
+// import ChatExample from "./pages/main/ChatExample/Chat";
+import Chat from "./pages/main/Chat/Chat.jsx";
+// import Counter from "./pages/main/Counter/CounterFunctional";
 import Register from "./pages/auth/Register/Register";
 
 import io from "socket.io-client";
@@ -46,8 +47,14 @@ function App() {
             exact
             component={Register}
           />
-          <PrivateRoute socket={socket} path="/chat" exact component={Chat} />
-          <PrivateRoute path="/counter" exact component={Counter} />
+          <PrivateRoute restricted={true} path="/" exact component={Chat} />
+          {/* <PrivateRoute
+            socket={socket}
+            path="/chat"
+            exact
+            component={ChatExample}
+          /> */}
+          {/* <PrivateRoute path="/counter" exact component={Counter} /> */}
         </Switch>
       </Router>
     </Provider>
