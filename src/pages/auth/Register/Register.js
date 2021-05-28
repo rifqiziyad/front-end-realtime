@@ -3,13 +3,17 @@ import { Button, Container, Form, Card } from "react-bootstrap";
 import styles from "./Register.module.css";
 import logoGoogle from "../../../assets/img/Logo google.png";
 import imgBack from "../../../assets/img/back.png";
+import { connect } from "react-redux";
+import { register } from "../../../redux/action/auth";
 
 function Register(props) {
   const [form, setForm] = useState({ username: "", email: "", password: "" });
 
-  const handleLogin = (event) => {
+  const handleRegister = (event) => {
     event.preventDefault();
-    props.history.push("/login");
+    props.register(form).then(() => {
+      props.history.push("/login");
+    });
   };
 
   const handleBack = (event) => {
@@ -23,6 +27,7 @@ function Register(props) {
       [event.target.name]: event.target.value,
     });
   };
+
   return (
     <>
       <Container className={styles.containerMain}>
@@ -32,7 +37,7 @@ function Register(props) {
             <h1>Register</h1>
           </div>
           <h5>Let’s create your account!</h5>
-          <Form onSubmit={handleLogin}>
+          <Form onSubmit={handleRegister}>
             <Form.Group className="mb-3">
               <Form.Label className={styles.label}>Name</Form.Label>
               <Form.Control
@@ -85,4 +90,10 @@ function Register(props) {
   );
 }
 
-export default Register;
+const mapStateToProps = (state) => ({
+  register: state.register,
+});
+
+const mapDispatchToProps = { register };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Register);
