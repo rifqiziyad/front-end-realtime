@@ -2,14 +2,30 @@ import { useState } from "react";
 import { Button, Container, Form, Card } from "react-bootstrap";
 import styles from "./Login.module.css";
 import logoGoogle from "../../../assets/img/Logo google.png";
+import { connect } from "react-redux";
+import { login } from "../../../redux/action/auth";
+import swal from "sweetalert";
 
 function Login(props) {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ userEmail: "", userPassword: "" });
 
   const handleLogin = (event) => {
     event.preventDefault();
-    localStorage.setItem("token", form.username);
-    props.history.push("/");
+
+    props
+      .login(form)
+      .then(() => {
+        localStorage.setItem("token", props.auth.data.token);
+        console.log(props);
+        // props.history.push("/");
+      })
+      .catch((error) => {
+        swal({
+          icon: "error",
+          title: props.auth.msg,
+        });
+      });
+    console.log(props.auth);
   };
 
   const changeText = (event) => {
@@ -37,8 +53,8 @@ function Login(props) {
                 className={styles.input}
                 type="text"
                 placeholder="Enter Your Email"
-                name="username"
-                value={form.username}
+                name="userEmail"
+                value={form.userEmail}
                 onChange={(event) => changeText(event)}
                 required
               />
@@ -50,8 +66,8 @@ function Login(props) {
                 className={styles.input}
                 type="password"
                 placeholder="Enter Your Password"
-                name="password"
-                value={form.password}
+                name="userPassword"
+                value={form.userPassword}
                 onChange={(event) => changeText(event)}
                 required
               />
@@ -61,7 +77,7 @@ function Login(props) {
               Login
             </Button>
           </Form>
-          <h2>Login with</h2>
+          <h2 className={styles.loginWith}>Login with</h2>
           <button className={styles.google}>
             <img src={logoGoogle} alt="" />
             <label>Google</label>
@@ -76,4 +92,10 @@ function Login(props) {
   );
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+const mapDispatchToProps = { login };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

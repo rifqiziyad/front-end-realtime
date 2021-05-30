@@ -40,6 +40,7 @@ const auth = (state = initialState, action) => {
         isLoading: false,
         isError: false,
       };
+
     case "REGISTER_REJECTED":
       return {
         ...state,

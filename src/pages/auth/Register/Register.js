@@ -5,15 +5,32 @@ import logoGoogle from "../../../assets/img/Logo google.png";
 import imgBack from "../../../assets/img/back.png";
 import { connect } from "react-redux";
 import { register } from "../../../redux/action/auth";
+import swal from "sweetalert";
 
 function Register(props) {
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    userName: "",
+    userEmail: "",
+    userPassword: "",
+  });
 
   const handleRegister = (event) => {
     event.preventDefault();
-    props.register(form).then(() => {
-      props.history.push("/login");
-    });
+    props
+      .register(form)
+      .then(() => {
+        swal({
+          icon: "success",
+          title: "Check Your Email for Verification",
+        });
+        props.history.push("/login");
+      })
+      .catch((error) => {
+        swal({
+          icon: "warning",
+          title: props.auth.msg,
+        });
+      });
   };
 
   const handleBack = (event) => {
@@ -28,6 +45,7 @@ function Register(props) {
     });
   };
 
+  console.log(props);
   return (
     <>
       <Container className={styles.containerMain}>
@@ -43,9 +61,9 @@ function Register(props) {
               <Form.Control
                 className={styles.input}
                 type="text"
-                name="username"
+                name="userName"
                 placeholder="Enter Your Name"
-                value={form.username}
+                value={form.userName}
                 onChange={(event) => changeText(event)}
                 required
               />
@@ -55,9 +73,9 @@ function Register(props) {
               <Form.Control
                 className={styles.input}
                 type="email"
-                name="email"
+                name="userEmail"
                 placeholder="Enter Your Email"
-                value={form.email}
+                value={form.userEmail}
                 onChange={(event) => changeText(event)}
                 required
               />
@@ -68,9 +86,9 @@ function Register(props) {
               <Form.Control
                 className={styles.input}
                 type="password"
-                name="password"
+                name="userPassword"
                 placeholder="Enter Your Password"
-                value={form.password}
+                value={form.userPassword}
                 onChange={(event) => changeText(event)}
                 required
               />
@@ -79,7 +97,7 @@ function Register(props) {
               Register
             </Button>
           </Form>
-          <h2>Register with</h2>
+          <h2 className={styles.loginWith}>Register with</h2>
           <button className={styles.google}>
             <img src={logoGoogle} alt="" />
             <label>Google</label>
@@ -91,7 +109,7 @@ function Register(props) {
 }
 
 const mapStateToProps = (state) => ({
-  register: state.register,
+  auth: state.auth,
 });
 
 const mapDispatchToProps = { register };

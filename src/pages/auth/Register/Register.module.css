@@ -61,11 +61,29 @@
   border: 1px solid #7e98df;
 }
 
-.cardBody h2 {
+.cardBody .loginWith {
   font-size: 16px;
   text-align: center;
   color: #848484 !important;
+  flex-direction: row;
+  display: flex;
   margin: 20px 0;
+}
+
+.cardBody .loginWith::before,
+.cardBody .loginWith::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid;
+  margin: auto;
+}
+
+.cardBody .loginWith::before {
+  margin-right: 1rem;
+}
+
+.cardBody .loginWith::after {
+  margin-left: 1rem;
 }
 
 .google {

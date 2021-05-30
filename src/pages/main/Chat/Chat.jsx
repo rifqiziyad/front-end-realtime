@@ -5,13 +5,18 @@ import styles from "./Chat.module.css";
 import iconMenu from "../../../assets/img/Menu.png";
 import iconSearch from "../../../assets/img/Search.png";
 import iconPlus from "../../../assets/img/Plus.png";
-import photoProfile from "../../../assets/img/photo-profile.png";
+import photoProfile from "../../../assets/img/photo-profile.svg";
 import checkListRead from "../../../assets/img/check-list-read.png";
 import checkListNotRead from "../../../assets/img/check-list-not-read.png";
 import iconSetting from "../../../assets/img/Settings.png";
 import iconContact from "../../../assets/img/Contacts.png";
 import iconInvite from "../../../assets/img/Invite friends.png";
 import iconFaq from "../../../assets/img/FAQ.png";
+import profileMenu from "../../../assets/img/Profile menu.svg";
+import iconSmile from "../../../assets/img/iconSmile.png";
+import button from "../../../assets/img/button.png";
+import { connect } from "react-redux";
+// import { login } from "../../../redux/action/auth";
 
 function Chat(props) {
   const [showA, setShowA] = useState(false);
@@ -19,11 +24,14 @@ function Chat(props) {
   const toggleShowA = () => {
     setShowA(!showA);
   };
+
+  console.log(props);
+
   return (
     <>
       <Container fluid className={styles.containerMain}>
         <Row>
-          <Col md={3} className={styles.coloumn1}>
+          <Col md={4} className={styles.coloumn1}>
             <div className={styles.navbar}>
               <h2>Telegram</h2>
               <img src={iconMenu} alt="Menu" onClick={toggleShowA} />
@@ -113,8 +121,59 @@ function Chat(props) {
               </Row>
             </Col>
           </Col>
-          <Col md={9} className={styles.coloumn2}>
+          {/* <Col md={8} className={styles.coloumn2}>
             Please select a chat to start messaging
+          </Col> */}
+          <Col md={8} className={styles.coloumn21}>
+            <div className={styles.top}>
+              <Col md={3} className={styles.topLeft}>
+                <Row className={styles.topLeftName}>
+                  <img src={photoProfile} alt="" />
+                  <Col>
+                    <span>Mother</span>
+                    <p>Online</p>
+                  </Col>
+                </Row>
+              </Col>
+              <div md={1} className={styles.topRight}>
+                <img src={profileMenu} alt="" />
+              </div>
+            </div>
+            <div className={styles.messages}>
+              <div className={styles.messagesReceiver}>
+                <img src={photoProfile} alt="" />
+                <div className={styles.colR}>
+                  <p>
+                    Hi, son, how are you doing? Today, my father and I went to
+                    buy a car, bought a cool car.
+                  </p>
+                </div>
+              </div>
+              <div className={styles.messagesSender}>
+                <img src={photoProfile} alt="" />
+                <div className={styles.colS}>
+                  <p>
+                    Hi, son, how are you doing? Today, my father and I went to
+                    buy a car, bought a cool car.
+                  </p>
+                </div>
+              </div>
+              <div className={styles.messagesReceiver}>
+                <img src={photoProfile} alt="" />
+                <div className={styles.colR}>
+                  <p>
+                    Hi, son, how are you doing? Today, my father and I went to
+                    buy a car, bought a cool car.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className={styles.inputChat}>
+              <input type="text" placeholder="Type your message..." />
+              <img src={iconPlus} alt="" />
+              <img src={iconSmile} alt="" />
+              <img src={button} alt="" />
+            </div>
           </Col>
         </Row>
       </Container>
@@ -122,4 +181,8 @@ function Chat(props) {
   );
 }
 
-export default Chat;
+const mapStateToProps = (state) => ({
+  user: state.auth,
+});
+
+export default connect(mapStateToProps)(Chat);

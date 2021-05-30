@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch } from "react-router-dom";
 
 import { Provider } from "react-redux";
-import store from "./redux/store";
+import { store, persistor } from "./redux/store";
+import { PersistGate } from "redux-persist/integration/react";
 
 import PrivateRoute from "./helpers/PrivateRoute";
 import PublicRoute from "./helpers/PublicRoute";
@@ -33,30 +34,32 @@ function App() {
 
   return (
     <Provider store={store}>
-      <Router>
-        <Switch>
-          <PublicRoute
-            restricted={true}
-            path="/login"
-            exact
-            component={Login}
-          />
-          <PublicRoute
-            restricted={true}
-            path="/register"
-            exact
-            component={Register}
-          />
-          <PrivateRoute restricted={true} path="/" exact component={Chat} />
-          {/* <PrivateRoute
+      <PersistGate loading={null} persistor={persistor}>
+        <Router>
+          <Switch>
+            <PublicRoute
+              restricted={true}
+              path="/login"
+              exact
+              component={Login}
+            />
+            <PublicRoute
+              restricted={true}
+              path="/register"
+              exact
+              component={Register}
+            />
+            <PrivateRoute restricted={true} path="/" exact component={Chat} />
+            {/* <PrivateRoute
             socket={socket}
             path="/chat"
             exact
             component={ChatExample}
           /> */}
-          {/* <PrivateRoute path="/counter" exact component={Counter} /> */}
-        </Switch>
-      </Router>
+            {/* <PrivateRoute path="/counter" exact component={Counter} /> */}
+          </Switch>
+        </Router>
+      </PersistGate>
     </Provider>
   );
 }
