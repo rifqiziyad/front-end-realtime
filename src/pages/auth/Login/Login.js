@@ -14,18 +14,17 @@ function Login(props) {
 
     props
       .login(form)
-      .then(() => {
-        localStorage.setItem("token", props.auth.data.token);
-        console.log(props);
-        // props.history.push("/");
+      .then((res) => {
+        localStorage.setItem("token", res.value.data.data.token);
+        props.history.push("/");
       })
       .catch((error) => {
+        console.log(error);
         swal({
           icon: "error",
-          title: props.auth.msg,
+          title: error.response.data.msg,
         });
       });
-    console.log(props.auth);
   };
 
   const changeText = (event) => {

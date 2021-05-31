@@ -1,6 +1,6 @@
 import React from "react";
-import { useState } from "react";
-import { Container, Row, Col, Toast, Button } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Container, Row, Col, Toast, Modal, Button } from "react-bootstrap";
 import styles from "./Chat.module.css";
 import iconMenu from "../../../assets/img/Menu.png";
 import iconSearch from "../../../assets/img/Search.png";
@@ -12,17 +12,31 @@ import iconSetting from "../../../assets/img/Settings.png";
 import iconContact from "../../../assets/img/Contacts.png";
 import iconInvite from "../../../assets/img/Invite friends.png";
 import iconFaq from "../../../assets/img/FAQ.png";
-import profileMenu from "../../../assets/img/Profile menu.svg";
-import iconSmile from "../../../assets/img/iconSmile.png";
-import button from "../../../assets/img/button.png";
+import imgDefault from "../../../assets/img/default.jpg";
+// import profileMenu from "../../../assets/img/Profile menu.svg";
+// import iconSmile from "../../../assets/img/iconSmile.png";
+// import button from "../../../assets/img/button.png";
+import { roomChat } from "..//../../redux/action/roomChat";
 import { connect } from "react-redux";
-// import { login } from "../../../redux/action/auth";
 
 function Chat(props) {
   const [showA, setShowA] = useState(false);
+  const [show, setShow] = useState(false);
 
   const toggleShowA = () => {
     setShowA(!showA);
+  };
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  // useEffect(() => {
+  //   chatList();
+  // });
+
+  const chatList = () => {
+    props.roomChat(props.user.data.user_id).then((res) => {
+      console.log(res);
+    });
   };
 
   console.log(props);
@@ -61,22 +75,32 @@ function Chat(props) {
               </div>
               <img src={iconPlus} alt="" />
             </div>
-            <Col className={styles.chat}>
-              <Row>
-                <img src={photoProfile} alt="" />
-                <Col>
-                  <div className={styles.nameUser}>
-                    <h5>Rifqi Ziyad Imtinan</h5>
-                    <h6>21:16</h6>
-                  </div>
-                  <div className={`${styles.message} ${styles.receiver}`}>
-                    <h4>Woy</h4>
-                    <h3>3</h3>
-                  </div>
+            {props.chatList.data.map((item, index) => {
+              return (
+                <Col className={styles.chat} key={index}>
+                  <Row>
+                    {item.user_image.length > 0 ? (
+                      <img src={item.user_image} alt="" />
+                    ) : (
+                      <img src={imgDefault} alt="" />
+                    )}
+
+                    <Col>
+                      <div className={styles.nameUser}>
+                        <h5>{item.user_name}</h5>
+                        <h6>21:16</h6>
+                      </div>
+                      <div className={`${styles.message} ${styles.receiver}`}>
+                        <h4>Woy</h4>
+                        <h3>3</h3>
+                      </div>
+                    </Col>
+                  </Row>
                 </Col>
-              </Row>
-            </Col>
-            <Col className={styles.chat}>
+              );
+            })}
+
+            {/* <Col className={styles.chat}>
               <Row>
                 <img src={photoProfile} alt="" />
                 <Col>
@@ -105,8 +129,8 @@ function Chat(props) {
                   </div>
                 </Col>
               </Row>
-            </Col>
-            <Col className={styles.chat}>
+            </Col> */}
+            {/* <Col className={styles.chat}>
               <Row>
                 <img src={photoProfile} alt="" />
                 <Col>
@@ -119,12 +143,32 @@ function Chat(props) {
                   </div>
                 </Col>
               </Row>
-            </Col>
+            </Col> */}
           </Col>
-          {/* <Col md={8} className={styles.coloumn2}>
-            Please select a chat to start messaging
-          </Col> */}
-          <Col md={8} className={styles.coloumn21}>
+          <Col md={8} className={styles.coloumn2}>
+            {/* Please select a chat to start messaging */}
+            <Button variant="primary" onClick={handleShow}>
+              Launch demo modal
+            </Button>
+
+            <Modal show={show} onHide={handleClose}>
+              <Modal.Header closeButton>
+                <Modal.Title>Modal heading</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Woohoo, you're reading this text in a modal!
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleClose}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={handleClose}>
+                  Save Changes
+                </Button>
+              </Modal.Footer>
+            </Modal>
+          </Col>
+          {/* <Col md={8} className={styles.coloumn21}>
             <div className={styles.top}>
               <Col md={3} className={styles.topLeft}>
                 <Row className={styles.topLeftName}>
@@ -174,7 +218,7 @@ function Chat(props) {
               <img src={iconSmile} alt="" />
               <img src={button} alt="" />
             </div>
-          </Col>
+          </Col> */}
         </Row>
       </Container>
     </>
@@ -183,6 +227,9 @@ function Chat(props) {
 
 const mapStateToProps = (state) => ({
   user: state.auth,
+  chatList: state.roomChat,
 });
 
-export default connect(mapStateToProps)(Chat);
+const mapDispatchToProps = { roomChat };
+
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);

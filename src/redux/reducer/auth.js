@@ -19,6 +19,7 @@ const auth = (state = initialState, action) => {
         isLoading: false,
         isError: false,
         data: action.payload.data.data,
+        msg: action.payload.data.msg,
       };
     case "LOGIN_REJECTED": // rejected = proses ketika gagal
       return {
