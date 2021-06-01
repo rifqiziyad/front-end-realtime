@@ -1,19 +1,19 @@
 const initialState = {
-  data: [], // kita gunakan untk menyimpan data user ketika berhasil ROOM_CHAT
+  data: [], // kita gunakan untk menyimpan data user ketika berhasil CHAT
   isLoading: false,
   isError: false,
   msg: "",
 };
 
-const roomChat = (state = initialState, action) => {
+const chat = (state = initialState, action) => {
   switch (action.type) {
-    case "ROOM_CHAT_PENDING": // pending = proses sedang dijalankan
+    case "CHAT_PENDING": // pending = proses sedang dijalankan
       return {
         ...state,
         isLoading: true,
         isError: false,
       };
-    case "ROOM_CHAT_FULFILLED": // fulfilld = prosos ketika berhasil
+    case "CHAT_FULFILLED": // fulfilld = prosos ketika berhasil
       return {
         ...state,
         isLoading: false,
@@ -21,7 +21,7 @@ const roomChat = (state = initialState, action) => {
         data: action.payload.data.data,
         msg: action.payload.data.msg,
       };
-    case "ROOM_CHAT_REJECTED": // rejected = proses ketika gagal
+    case "CHAT_REJECTED": // rejected = proses ketika gagal
       return {
         ...state,
         isLoading: false,
@@ -34,4 +34,4 @@ const roomChat = (state = initialState, action) => {
   }
 };
 
-export default roomChat;
+export default chat;

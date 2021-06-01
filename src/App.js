@@ -9,7 +9,7 @@ import PrivateRoute from "./helpers/PrivateRoute";
 import PublicRoute from "./helpers/PublicRoute";
 
 import Login from "./pages/auth/Login/Login";
-// import ChatExample from "./pages/main/ChatExample/Chat";
+import ChatExample from "./pages/main/ChatExample/ChatExample";
 import Chat from "./pages/main/Chat/Chat.jsx";
 // import Counter from "./pages/main/Counter/CounterFunctional";
 import Register from "./pages/auth/Register/Register";
@@ -49,13 +49,13 @@ function App() {
               exact
               component={Register}
             />
-            <PrivateRoute restricted={true} path="/" exact component={Chat} />
-            {/* <PrivateRoute
-            socket={socket}
-            path="/chat"
-            exact
-            component={ChatExample}
-          /> */}
+            <PrivateRoute socket={socket} path="/" exact component={Chat} />
+            <PrivateRoute
+              socket={socket}
+              path="/chat"
+              exact
+              component={ChatExample}
+            />
             {/* <PrivateRoute path="/counter" exact component={Counter} /> */}
           </Switch>
         </Router>
