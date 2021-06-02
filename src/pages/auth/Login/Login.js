@@ -16,14 +16,15 @@ function Login(props) {
       .login(form)
       .then((res) => {
         localStorage.setItem("token", res.value.data.data.token);
+        localStorage.setItem("name", res.value.data.data.user_name);
         props.history.push("/");
       })
       .catch((error) => {
         console.log(error);
-        swal({
-          icon: "error",
-          title: error.response.data.msg,
-        });
+        // swal({
+        //   icon: "error",
+        //   title: error.response.data.msg,
+        // });
       });
   };
 

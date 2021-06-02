@@ -28,6 +28,7 @@ function Chat(props) {
   const [messages, setMessages] = useState([]);
   const [room, setRoom] = useState({ new: "", old: "" });
   const username = props.user.data.user_name;
+  const [dataReceiver, setDataReceiver] = useState({});
 
   const toggleShowA = () => {
     setShowA(!showA);
@@ -41,12 +42,14 @@ function Chat(props) {
   };
 
   useEffect(() => {
+    console.log("use effect");
     props.roomChat(props.user.data.user_id);
     if (props.socket) {
-      props.socket.on("chatMessage", (dataMassage) => {
-        setMessages([...messages, dataMassage]);
+      props.socket.on("chatMessage", (dataMessage) => {
+        setMessages([...messages, dataMessage]);
       });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.socket]);
 
@@ -54,10 +57,11 @@ function Chat(props) {
     setMessage(event.target.value);
   };
 
-  const handleSendMessage = () => {
-    console.log("Send Message: " + message);
-    console.log("Username: " + username);
-    console.log("Room :" + room);
+  const handleSendMessage = (event) => {
+    // console.log("Send Message: " + message);
+    // console.log("Username: " + username);
+    // console.log("Room :" + room.new);
+    event.preventDefault();
     const setData = {
       room: room.new,
       username,
@@ -69,20 +73,19 @@ function Chat(props) {
     setMessage("");
   };
 
-  // console.log(props);
-
-  const handleSelectRoomChat = (event, number) => {
-    props.chat(number);
-    setRoom(event.target.value);
+  const handleSelectRoomChat = (event, data) => {
+    props.chat(data.room_chat);
     props.socket.emit("joinRoom", {
-      room: event.target.value,
+      room: data.room_chat,
       oldRoom: room.old,
       username, // username: username
     });
-    setRoom({ ...room, new: event.target.value, old: event.target.value });
+    setDataReceiver(data);
+    setRoom({ ...room, new: data.room_chat, old: data.room_chat });
+    console.log(data.room_chat);
   };
 
-  // console.log(messages);
+  // console.log(dataReceiver);
 
   return (
     <>
@@ -126,9 +129,7 @@ function Chat(props) {
                   className={styles.chat}
                   key={index}
                   value={item.user_name}
-                  onClick={(event) =>
-                    handleSelectRoomChat(event, item.room_chat)
-                  }
+                  onClick={(event) => handleSelectRoomChat(event, item)}
                 >
                   <div className={styles.profile} onClick={toggleShowB}>
                     {item.user_image.length > 0 ? (
@@ -140,7 +141,7 @@ function Chat(props) {
                     <Col>
                       <div className={styles.nameUser}>
                         <h5>{item.user_name}</h5>
-                        <h6>21:16</h6>
+                        <h6>00:00</h6>
                       </div>
                       <div className={`${styles.message} ${styles.receiver}`}>
                         <h4>No Message</h4>
@@ -151,51 +152,6 @@ function Chat(props) {
                 </div>
               );
             })}
-
-            {/* <Col className={styles.chat}>
-              <Row>
-                <img src={photoProfile} alt="" />
-                <Col>
-                  <div className={styles.nameUser}>
-                    <h5>Rifqi Ziyad Imtinan</h5>
-                    <h6>21:16</h6>
-                  </div>
-                  <div className={`${styles.message} ${styles.sender}`}>
-                    <h4>Woy</h4>
-                    <img src={checkListRead} alt="" />
-                  </div>
-                </Col>
-              </Row>
-            </Col>
-            <Col className={styles.chat}>
-              <Row>
-                <img src={photoProfile} alt="" />
-                <Col>
-                  <div className={styles.nameUser}>
-                    <h5>Rifqi Ziyad Imtinan</h5>
-                    <h6>21:16</h6>
-                  </div>
-                  <div className={`${styles.message} ${styles.sender}`}>
-                    <h4>Woy</h4>
-                    <img src={checkListNotRead} alt="" />
-                  </div>
-                </Col>
-              </Row>
-            </Col> */}
-            {/* <Col className={styles.chat}>
-              <Row>
-                <img src={photoProfile} alt="" />
-                <Col>
-                  <div className={styles.nameUser}>
-                    <h5>Rifqi Ziyad Imtinan</h5>
-                    <h6>Yesterday</h6>
-                  </div>
-                  <div className={`${styles.message} ${styles.sender}`}>
-                    <h4>Woy</h4>
-                  </div>
-                </Col>
-              </Row>
-            </Col> */}
           </Col>
           {/* <Col md={8} className={styles.coloumn2}>
             Please select a chat to start messaging
@@ -209,13 +165,19 @@ function Chat(props) {
               <div className={styles.top}>
                 <Col md={3} className={styles.topLeft}>
                   <Row className={styles.topLeftName}>
-                    {props.messages.data[1].user_image.length > 0 ? (
-                      <img src={props.messages.data[1].user_image} alt="" />
+                    {dataReceiver.user_image ? (
+                      <img
+                        src={
+                          "http://localhost:3003/backend3/api/" +
+                          dataReceiver.user_image
+                        }
+                        alt=""
+                      />
                     ) : (
                       <img src={imgDefault} alt="" />
                     )}
                     <Col>
-                      <span>{props.messages.data[1].user_name}</span>
+                      <span>{dataReceiver.user_name}</span>
                       <p>Online</p>
                     </Col>
                   </Row>
@@ -241,9 +203,15 @@ function Chat(props) {
                 ) : (
                 )} */}
                   {/* <img src={imgDefault} alt="" /> */}
+
                   <div className={styles.colS}>
                     {messages.map((item, index) => {
-                      return <p key={index}>{item.message}</p>;
+                      return (
+                        <div key={index}>
+                          {/* <h6>{localStorage.getItem("name")}</h6>:{item.message} */}
+                          <h6>anon : hello world</h6>
+                        </div>
+                      );
                     })}
                   </div>
                 </div>

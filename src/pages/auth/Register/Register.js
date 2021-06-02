@@ -28,7 +28,7 @@ function Register(props) {
       .catch((error) => {
         swal({
           icon: "warning",
-          title: props.auth.msg,
+          title: error.response.data.msg,
         });
       });
   };
@@ -45,7 +45,6 @@ function Register(props) {
     });
   };
 
-  console.log(props);
   return (
     <>
       <Container className={styles.containerMain}>
