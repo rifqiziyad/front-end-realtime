@@ -17,6 +17,7 @@ import { chat } from "..//../../redux/action/chat";
 import Setting from "../../../components/Setting";
 
 import { connect } from "react-redux";
+import axiosApiIntances from "../../../utils/axios";
 
 function Chat(props) {
   const userId = sessionStorage.getItem("userid");
@@ -41,10 +42,11 @@ function Chat(props) {
     setShowB(!showB);
   };
 
-  // useEffect(() => {}, []);
-
   useEffect(() => {
     props.roomChat(sessionStorage.getItem("userid"));
+  }, []);
+
+  useEffect(() => {
     if (props.socket) {
       props.socket.on("chatMessage", (dataMessage) => {
         setMessages([...messages, dataMessage]);
@@ -106,6 +108,20 @@ function Chat(props) {
         // [1] menjalankan socket io untuk mendapatkan realtimenya
         // props.socket.emit("send-message", setData);
         // [2] menjalankan proses axios, post data ke databse
+        const postData = {
+          roomChat: setData.room,
+          senderId: setData.senderId,
+          receiverId: setData.receiverId,
+          messages: setData.message,
+        };
+        axiosApiIntances
+          .post("/chat", postData)
+          .then((res) => {
+            return res.data.data;
+          })
+          .catch((err) => {
+            return err.response.data.msg;
+          });
         props.socket.emit("notif-message", setData);
         setMessage("");
       }
@@ -127,6 +143,14 @@ function Chat(props) {
 
     // get data dari database dan disimpan ke dalam variable  penampung(message)
     // setMessages(res.data.data)
+    axiosApiIntances
+      .get(`chat/?roomChat=${data.room_chat}`)
+      .then((res) => {
+        setMessages(res.data.data);
+      })
+      .catch((err) => {
+        return err.response.data.msg;
+      });
   };
 
   const handleConsoleLog = () => {
@@ -143,7 +167,7 @@ function Chat(props) {
           autohide
         >
           <Toast.Header closeButton={false}>
-            <strong className="me-auto">Telegram App ({notif.username})</strong>
+            <strong className="me-auto">Lelegram App ({notif.username})</strong>
             <small className="text-muted">just now</small>
           </Toast.Header>
           <Toast.Body>{notif.message}</Toast.Body>
@@ -151,7 +175,7 @@ function Chat(props) {
         <Row>
           <Col md={4} className={styles.coloumn1}>
             <div className={styles.navbar}>
-              <h2>Telegram</h2>
+              <h2>Lelegram</h2>
               <button onClick={handleConsoleLog}>Console</button>
               <img src={iconMenu} alt="Menu" onClick={toggleShowA} />
             </div>
@@ -238,30 +262,26 @@ function Chat(props) {
                 </div>
               </div>
               <div className={styles.messages}>
-                <div className={styles.messagesReceiver}>
-                  {/* {props.messages.data[1].user_image.length > 0 ? (
-                  <img src={props.messages.data[1].user_image} alt="" />
-                ) : (
-                  <img src={imgDefault} alt="" />
-                )} */}
-                  {/* <div className={styles.colR}>
-                    <p>Hi, son, how are you doing?</p>
-                  </div> */}
-                </div>
                 <div className={styles.messagesSender}>
-                  {/* {props.messages.data[0].user_image.length > 0 ? (
-                  <img src={props.messages.data[0].user_image} alt="" />
-                ) : (
-                )} */}
-                  {/* <img src={imgDefault} alt="" /> */}
-
                   <div className={styles.colS}>
                     {messages.map((item, index) => {
                       return (
                         <div key={index}>
-                          <h6>
-                            {item.username} :{item.message}
-                          </h6>
+                          <span
+                            className={
+                              item.sender_id === parseInt(userId) ||
+                              parseInt(item.senderId) === parseInt(userId)
+                                ? styles.sender
+                                : styles.receiver
+                            }
+                          >
+                            {item.user_image ? (
+                              <img src={item.user_image} alt="" />
+                            ) : (
+                              <img src={imgDefault} alt="" />
+                            )}{" "}
+                            {item.message}
+                          </span>
                         </div>
                       );
                     })}
