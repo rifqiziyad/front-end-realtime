@@ -9,7 +9,7 @@ axiosApiIntances.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     config.headers = {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${sessionStorage.getItem("token")}`,
     };
     return config;
   },
@@ -31,7 +31,7 @@ axiosApiIntances.interceptors.response.use(
     // Do something with response error
     if (error.response.status === 403) {
       alert("Please Login !");
-      localStorage.clear();
+      sessionStorage.clear();
       window.location.href = "/login";
     }
     return Promise.reject(error);

@@ -15,16 +15,17 @@ function Login(props) {
     props
       .login(form)
       .then((res) => {
-        localStorage.setItem("token", res.value.data.data.token);
-        localStorage.setItem("name", res.value.data.data.user_name);
+        sessionStorage.setItem("token", res.value.data.data.token);
+        sessionStorage.setItem("username", res.value.data.data.user_name);
+        sessionStorage.setItem("userid", res.value.data.data.user_id);
         props.history.push("/");
       })
       .catch((error) => {
         console.log(error);
-        // swal({
-        //   icon: "error",
-        //   title: error.response.data.msg,
-        // });
+        swal({
+          icon: "error",
+          title: error.response.data.msg,
+        });
       });
   };
 

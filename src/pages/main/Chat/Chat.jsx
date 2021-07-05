@@ -8,27 +8,31 @@ import iconPlus from "../../../assets/img/Plus.png";
 // import photoProfile from "../../../assets/img/photo-profile.svg";
 // import checkListRead from "../../../assets/img/check-list-read.png";
 // import checkListNotRead from "../../../assets/img/check-list-not-read.png";
-import iconSetting from "../../../assets/img/Settings.png";
-import iconContact from "../../../assets/img/Contacts.png";
-import iconInvite from "../../../assets/img/Invite friends.png";
-import iconFaq from "../../../assets/img/FAQ.png";
 import imgDefault from "../../../assets/img/profileDefault.png";
 import profileMenu from "../../../assets/img/Profile menu.svg";
 import iconSmile from "../../../assets/img/iconSmile.png";
 import button from "../../../assets/img/button.png";
 import { roomChat } from "..//../../redux/action/roomChat";
 import { chat } from "..//../../redux/action/chat";
+import Setting from "../../../components/Setting";
 
 import { connect } from "react-redux";
 
 function Chat(props) {
+  const userId = sessionStorage.getItem("userid");
+  const username = sessionStorage.getItem("username");
   const [showA, setShowA] = useState(false);
   const [showB, setShowB] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
-  const [room, setRoom] = useState({ new: "", old: "" });
-  const username = props.user.data.user_name;
+  const [connectedRooms, setConnectedRooms] = useState({
+    room: "",
+    oldRoom: "",
+  });
   const [dataReceiver, setDataReceiver] = useState({});
+  const [userOnline, setUserOnline] = useState([]);
+  const [notif, setNotif] = useState({ show: false });
+  const [typing, setTyping] = useState({ isTyping: false });
 
   const toggleShowA = () => {
     setShowA(!showA);
@@ -36,84 +40,123 @@ function Chat(props) {
   const toggleShowB = () => {
     setShowB(!showB);
   };
-  const handleLogout = () => {
-    localStorage.clear();
-    props.history.push("/login");
-  };
+
+  // useEffect(() => {}, []);
 
   useEffect(() => {
-    console.log("use effect");
-    props.roomChat(props.user.data.user_id);
+    props.roomChat(sessionStorage.getItem("userid"));
     if (props.socket) {
       props.socket.on("chatMessage", (dataMessage) => {
         setMessages([...messages, dataMessage]);
       });
+      connect();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.socket]);
+  }, [props.socket, messages]);
+
+  const connect = () => {
+    props.socket.emit("connect-server", userId);
+    props.socket.on("list-user-online", (listUserOnline) => {
+      setUserOnline(listUserOnline);
+    });
+    props.socket.on("chat-message", (dataMessage) => {
+      setMessages([...messages, dataMessage]);
+    });
+    props.socket.on("notification", (data) => {
+      setNotif(data);
+      console.log(data);
+    });
+    props.socket.on("typing", (data) => {
+      setTyping(data);
+    });
+  };
 
   const handleChangeText = (event) => {
     setMessage(event.target.value);
+    props.socket.emit("typing-message", {
+      username,
+      room: connectedRooms.room,
+      isTyping: true,
+    });
+  };
+
+  const handleStopTyping = () => {
+    setTimeout(() => {
+      props.socket.emit("typing-message", {
+        username,
+        room: connectedRooms.room,
+        isTyping: false,
+      });
+    }, 2000);
   };
 
   const handleSendMessage = (event) => {
-    // console.log("Send Message: " + message);
-    // console.log("Username: " + username);
-    // console.log("Room :" + room.new);
-    event.preventDefault();
-    const setData = {
-      room: room.new,
-      username,
-      message,
-    };
-    // [1] menjalankan socket io untuk mendapatkan realtimenya
-    props.socket.emit("roomMessage", setData);
-    // [2] menjalankan proses axios, post data ke databse
-    setMessage("");
+    if (event.key === "Enter") {
+      if (message !== "") {
+        const setData = {
+          room: connectedRooms.room,
+          senderId: userId,
+          receiverId: dataReceiver.user_id,
+          username,
+          message,
+          show: true,
+        };
+        props.socket.emit("send-message", setData);
+        // [1] menjalankan socket io untuk mendapatkan realtimenya
+        // props.socket.emit("send-message", setData);
+        // [2] menjalankan proses axios, post data ke databse
+        props.socket.emit("notif-message", setData);
+        setMessage("");
+      }
+    }
   };
 
-  const handleSelectRoomChat = (event, data) => {
-    props.chat(data.room_chat);
-    props.socket.emit("joinRoom", {
+  const handleSelectRoomChat = (data) => {
+    props.socket.emit("join-room", {
       room: data.room_chat,
-      oldRoom: room.old,
-      username, // username: username
+      oldRoom: connectedRooms.oldRoom,
     });
+    props.chat(data.room_chat);
     setDataReceiver(data);
-    setRoom({ ...room, new: data.room_chat, old: data.room_chat });
-    console.log(data.room_chat);
+    setConnectedRooms({
+      ...connectedRooms,
+      room: data.room_chat,
+      oldRoom: data.room_chat,
+    });
+
+    // get data dari database dan disimpan ke dalam variable  penampung(message)
+    // setMessages(res.data.data)
   };
 
-  // console.log(dataReceiver);
+  const handleConsoleLog = () => {
+    console.log(messages);
+  };
 
   return (
     <>
       <Container fluid className={styles.containerMain}>
+        <Toast
+          onClose={() => setNotif({ ...notif, show: false })}
+          show={notif.show}
+          delay={5000}
+          autohide
+        >
+          <Toast.Header closeButton={false}>
+            <strong className="me-auto">Telegram App ({notif.username})</strong>
+            <small className="text-muted">just now</small>
+          </Toast.Header>
+          <Toast.Body>{notif.message}</Toast.Body>
+        </Toast>
         <Row>
           <Col md={4} className={styles.coloumn1}>
             <div className={styles.navbar}>
               <h2>Telegram</h2>
+              <button onClick={handleConsoleLog}>Console</button>
               <img src={iconMenu} alt="Menu" onClick={toggleShowA} />
             </div>
             <Toast show={showA} onClose={toggleShowA} className={styles.menu}>
-              <div className={styles.icon}>
-                <img src={iconSetting} alt="" />
-                <p>Setings</p>
-              </div>
-              <div className={styles.icon}>
-                <img src={iconContact} alt="" />
-                <p>Contacts</p>
-              </div>
-              <div className={styles.icon}>
-                <img src={iconInvite} alt="" />
-                <p>Invite Friend</p>
-              </div>
-              <div className={styles.icon}>
-                <img src={iconFaq} alt="" />
-                <p>Telegram FAQ</p>
-              </div>
-              <button onClick={handleLogout}>Logout</button>
+              <Setting {...props} />
             </Toast>
             <div className={styles.search}>
               <div>
@@ -129,7 +172,7 @@ function Chat(props) {
                   className={styles.chat}
                   key={index}
                   value={item.user_name}
-                  onClick={(event) => handleSelectRoomChat(event, item)}
+                  onClick={() => handleSelectRoomChat(item)}
                 >
                   <div className={styles.profile} onClick={toggleShowB}>
                     {item.user_image.length > 0 ? (
@@ -145,7 +188,6 @@ function Chat(props) {
                       </div>
                       <div className={`${styles.message} ${styles.receiver}`}>
                         <h4>No Message</h4>
-                        {/* <h3>3</h3> */}
                       </div>
                     </Col>
                   </div>
@@ -178,7 +220,16 @@ function Chat(props) {
                     )}
                     <Col>
                       <span>{dataReceiver.user_name}</span>
-                      <p>Online</p>
+                      <p>
+                        {userOnline.includes(dataReceiver.user_id)
+                          ? "Online"
+                          : "Offline"}
+                      </p>
+                      {typing.isTyping && (
+                        <p>
+                          <em>{typing.username} is typing a message...</em>
+                        </p>
+                      )}
                     </Col>
                   </Row>
                 </Col>
@@ -208,8 +259,9 @@ function Chat(props) {
                     {messages.map((item, index) => {
                       return (
                         <div key={index}>
-                          {/* <h6>{localStorage.getItem("name")}</h6>:{item.message} */}
-                          <h6>anon : hello world</h6>
+                          <h6>
+                            {item.username} :{item.message}
+                          </h6>
                         </div>
                       );
                     })}
@@ -221,11 +273,15 @@ function Chat(props) {
                   type="text"
                   placeholder="Type your message..."
                   value={message}
-                  onChange={(event) => handleChangeText(event)}
+                  onChange={(event) => {
+                    handleChangeText(event);
+                    handleStopTyping();
+                  }}
+                  onKeyPress={handleSendMessage}
                 />
                 <img src={iconPlus} alt="" />
                 <img src={iconSmile} alt="" />
-                <img src={button} alt="" onClick={handleSendMessage} />
+                <img src={button} alt="" />
               </div>
             </Toast>
           </Col>

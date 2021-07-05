@@ -260,7 +260,7 @@ input[type="text"]:focus {
   margin-left: 20px;
 }
 
-.messagesSender p {
+.messagesSender h6 {
   color: #000000;
   font-size: 15px;
   background: #ffffff;
