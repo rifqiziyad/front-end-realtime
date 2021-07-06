@@ -11,7 +11,7 @@ import iconPlus from "../../../assets/img/Plus.png";
 import imgDefault from "../../../assets/img/profileDefault.png";
 import profileMenu from "../../../assets/img/Profile menu.svg";
 import iconSmile from "../../../assets/img/iconSmile.png";
-import button from "../../../assets/img/button.png";
+import button from "../../../assets/img/iconSend.png";
 import { roomChat } from "..//../../redux/action/roomChat";
 import { chat } from "..//../../redux/action/chat";
 import Setting from "../../../components/Setting";
@@ -44,6 +44,7 @@ function Chat(props) {
 
   useEffect(() => {
     props.roomChat(sessionStorage.getItem("userid"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -67,7 +68,6 @@ function Chat(props) {
     });
     props.socket.on("notification", (data) => {
       setNotif(data);
-      console.log(data);
     });
     props.socket.on("typing", (data) => {
       setTyping(data);
@@ -94,7 +94,7 @@ function Chat(props) {
   };
 
   const handleSendMessage = (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" || event.button === 0) {
       if (message !== "") {
         const setData = {
           room: connectedRooms.room,
@@ -153,8 +153,8 @@ function Chat(props) {
       });
   };
 
-  const handleConsoleLog = () => {
-    console.log(messages);
+  const handleConsoleLog = (event) => {
+    console.log(onclick);
   };
 
   return (
@@ -185,7 +185,7 @@ function Chat(props) {
             <div className={styles.search}>
               <div>
                 <img src={iconSearch} alt="Search" />
-                <input type="text" placeholder="Type your message..." />
+                <input type="search" placeholder="Type your message..." />
               </div>
               <img src={iconPlus} alt="" />
             </div>
@@ -229,7 +229,7 @@ function Chat(props) {
               className={styles.toastColoumn21}
             >
               <div className={styles.top}>
-                <Col md={3} className={styles.topLeft}>
+                <Col md={8} className={styles.topLeft}>
                   <Row className={styles.topLeftName}>
                     {dataReceiver.user_image ? (
                       <img
@@ -244,14 +244,15 @@ function Chat(props) {
                     )}
                     <Col>
                       <span>{dataReceiver.user_name}</span>
-                      <p>
-                        {userOnline.includes(dataReceiver.user_id)
-                          ? "Online"
-                          : "Offline"}
-                      </p>
-                      {typing.isTyping && (
+                      {typing.isTyping ? (
                         <p>
                           <em>{typing.username} is typing a message...</em>
+                        </p>
+                      ) : (
+                        <p>
+                          {userOnline.includes(dataReceiver.user_id)
+                            ? "Online"
+                            : "Offline"}
                         </p>
                       )}
                     </Col>
@@ -262,32 +263,32 @@ function Chat(props) {
                 </div>
               </div>
               <div className={styles.messages}>
-                <div className={styles.messagesSender}>
-                  <div className={styles.colS}>
-                    {messages.map((item, index) => {
-                      return (
-                        <div key={index}>
-                          <span
-                            className={
-                              item.sender_id === parseInt(userId) ||
-                              parseInt(item.senderId) === parseInt(userId)
-                                ? styles.sender
-                                : styles.receiver
-                            }
-                          >
-                            {item.user_image ? (
-                              <img src={item.user_image} alt="" />
-                            ) : (
-                              <img src={imgDefault} alt="" />
-                            )}{" "}
-                            {item.message}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                {messages.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      style={
+                        item.sender_id === parseInt(userId) ||
+                        parseInt(item.senderId) === parseInt(userId)
+                          ? { textAlign: "right" }
+                          : { textAlign: "left" }
+                      }
+                    >
+                      <span
+                        className={
+                          item.sender_id === parseInt(userId) ||
+                          parseInt(item.senderId) === parseInt(userId)
+                            ? styles.sender
+                            : styles.receiver
+                        }
+                      >
+                        {item.message}
+                      </span>
+                    </div>
+                  );
+                })}
               </div>
+
               <div className={styles.inputChat}>
                 <input
                   type="text"
@@ -301,7 +302,7 @@ function Chat(props) {
                 />
                 <img src={iconPlus} alt="" />
                 <img src={iconSmile} alt="" />
-                <img src={button} alt="" />
+                <img onClick={handleSendMessage} src={button} alt="" />
               </div>
             </Toast>
           </Col>

@@ -12,7 +12,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 20px;
+  margin: 15px 0;
 }
 
 .menu {
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 20px 0 20px 0;
+  margin-bottom: 15px;
 }
 
 .search div {
@@ -77,7 +77,7 @@
   padding: 7px 15px;
 }
 
-input[type="text"]:focus {
+input[type="search"]:focus {
   outline: none;
 }
 
@@ -186,6 +186,7 @@ input[type="text"]:focus {
 
 .topLeft {
   display: flex;
+  box-sizing: border-box;
 }
 
 .topLeftName {
@@ -193,9 +194,9 @@ input[type="text"]:focus {
 }
 
 .topLeft img {
-  /* margin-top: 7px; */
-  width: 45%;
-  height: 70%;
+  width: 77px;
+  height: 50px;
+  border-radius: 35%;
 }
 
 .topLeft span {
@@ -207,6 +208,13 @@ input[type="text"]:focus {
 .topLeft p {
   color: #7e98df;
   font-size: 13px;
+  margin: 0;
+}
+
+.topLeftName .statusOnline {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
 }
 
 .topRight {
@@ -218,41 +226,33 @@ input[type="text"]:focus {
 .messages {
   padding: 0px 20px;
   position: relative;
-  height: 80%;
+  height: 81.5%;
   overflow-y: scroll;
+  padding: 20px 0;
 }
 
-.messagesSender {
-  padding: 10px;
+.messages div {
+  padding: 10px 20px;
 }
 
 .messages .sender {
-  border: blue solid 1px;
-  display: flex;
-  align-items: center;
-  flex-direction: row-reverse;
+  background: #e2e2e2;
+  border-radius: 35px 10px 35px 35px;
 }
 
 .messages .receiver {
-  border: red solid 1px;
-  display: flex;
-
-  display: flex;
-  align-items: center;
+  background: #7e98df;
+  border-radius: 35px 35px 35px 10px;
+  color: white;
 }
 
-.messagesSender img {
-  width: 6%;
-  margin: 0 10px;
-}
-
-.messagesSender span {
+.messages span {
+  font-family: "Rubik", sans-serif;
   color: #000000;
   font-size: 17px;
   font-weight: 500;
-  padding: 10px;
+  padding: 10px 20px;
   margin: 10px;
-  display: flex;
 }
 
 .inputChat {
@@ -267,7 +267,6 @@ input[type="text"]:focus {
   background-color: white;
   padding: 0 20px 0 0px;
   border-radius: 10px;
-  margin-bottom: 2px;
 }
 
 .inputChat input {
