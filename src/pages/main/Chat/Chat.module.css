@@ -13,6 +13,18 @@
   align-items: center;
   justify-content: space-between;
   margin: 15px 0;
+  box-sizing: border-box;
+}
+
+.navbar div {
+  padding: 6px;
+}
+
+.navbar div:hover {
+  background-color: rgb(212, 212, 212);
+  padding: 6px;
+  border-radius: 20%;
+  cursor: pointer;
 }
 
 .menu {
@@ -161,10 +173,9 @@ input[type="search"]:focus {
   font-size: 24px;
   height: 100vh;
   color: #848484;
-  margin: 0px 0;
+  margin: 0;
   position: relative;
   padding: 0;
-  width: 66.6%;
 }
 
 .toastColoumn21 {
@@ -223,12 +234,23 @@ input[type="search"]:focus {
   align-items: center;
 }
 
+.topRight div {
+  padding: 7px;
+}
+
+.topRight div:hover {
+  background-color: rgb(212, 212, 212);
+  padding: 6px;
+  border-radius: 20%;
+  cursor: pointer;
+}
+
 .messages {
   padding: 0px 20px;
   position: relative;
   height: 81.5%;
   overflow-y: scroll;
-  padding: 20px 0;
+  padding: 20px 50px;
 }
 
 .messages div {
@@ -256,7 +278,8 @@ input[type="search"]:focus {
 }
 
 .inputChat {
-  border: rgb(207, 200, 200) solid 1px;
+  border-top: rgb(207, 200, 200) solid 1px;
+  border-bottom: rgb(207, 200, 200) solid 1px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -266,7 +289,7 @@ input[type="search"]:focus {
   width: 100%;
   background-color: white;
   padding: 0 20px 0 0px;
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 
 .inputChat input {
@@ -291,6 +314,11 @@ input[type="search"]:focus {
 }
 
 .inputChat img {
-  width: 3%;
-  height: 5%;
+  width: 25px;
+  height: 25px;
+}
+
+.contactInfo {
+  padding: 0;
+  margin: 0;
 }
