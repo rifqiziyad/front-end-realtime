@@ -4,7 +4,9 @@
 .containerMain {
   font-family: "Rubik", sans-serif;
   width: 30%;
-  margin-top: 50px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 .cardBody h1 {

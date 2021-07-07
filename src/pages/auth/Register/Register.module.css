@@ -4,12 +4,13 @@
 .containerMain {
   font-family: "Rubik", sans-serif;
   width: 30%;
-  margin-top: 50px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 .register {
   position: relative;
-  /* border: black solid 1px; */
 }
 
 .register img {

@@ -14,8 +14,9 @@ import profileMenu from "../../../assets/img/Profile menu.svg";
 import iconSmile from "../../../assets/img/iconSmile.png";
 import { roomChat } from "..//../../redux/action/roomChat";
 import { chat } from "..//../../redux/action/chat";
-import Setting from "../../../components/Setting";
+import Menu from "../../../components/Menu";
 import ContactInfo from "../../../components/ContactInfo";
+import Settings from "../../../components/Settings";
 
 import { connect } from "react-redux";
 import axiosApiIntances from "../../../utils/axios";
@@ -36,6 +37,7 @@ function Chat(props) {
   const [userOnline, setUserOnline] = useState([]);
   const [notif, setNotif] = useState({ show: false });
   const [typing, setTyping] = useState({ isTyping: false });
+  const [isSettings, setIsSetting] = useState(false);
 
   const toggleShowA = () => {
     setShowA(!showA);
@@ -45,7 +47,6 @@ function Chat(props) {
   };
   const toggleShowContactInfo = () => {
     setShowContactInfo(!showContactInfo);
-    console.log(showContactInfo);
   };
 
   useEffect(() => {
@@ -159,9 +160,11 @@ function Chat(props) {
       });
   };
 
-  const handleConsoleLog = (event) => {
-    console.log(onclick);
+  const StateSettings = (data) => {
+    setIsSetting(data);
   };
+
+  console.log(isSettings);
 
   return (
     <>
@@ -179,54 +182,61 @@ function Chat(props) {
           <Toast.Body>{notif.message}</Toast.Body>
         </Toast>
         <Row>
-          <Col md={4} className={styles.coloumn1}>
-            <div className={styles.navbar}>
-              <h2>Lelegram</h2>
-              <button onClick={handleConsoleLog}>Console</button>
-              <div>
-                <img src={iconMenu} alt="Menu" onClick={toggleShowA} />
-              </div>
-            </div>
-            <Toast show={showA} onClose={toggleShowA} className={styles.menu}>
-              <Setting {...props} />
-            </Toast>
-            <div className={styles.search}>
-              <div>
-                <img src={iconSearch} alt="Search" />
-                <input type="search" placeholder="Type your message..." />
-              </div>
-              <img src={iconPlus} alt="" />
-            </div>
+          {isSettings ? (
+            <Col md={4} className={styles.settings}>
+              <Settings {...props} throwData={(data) => StateSettings(data)} />
+            </Col>
+          ) : (
+            <Col md={4} className={styles.coloumn1}>
+              <div className={styles.navbar}>
+                <h2>Lelegram</h2>
 
-            {props.chatList.data.map((item, index) => {
-              return (
-                <div
-                  className={styles.chat}
-                  key={index}
-                  value={item.user_name}
-                  onClick={() => handleSelectRoomChat(item)}
-                >
-                  <div className={styles.profile} onClick={toggleShowB}>
-                    {item.user_image.length > 0 ? (
-                      <img src={item.user_image} alt="" />
-                    ) : (
-                      <img src={imgDefault} alt="" />
-                    )}
-
-                    <Col>
-                      <div className={styles.nameUser}>
-                        <h5>{item.user_name}</h5>
-                        <h6>00:00</h6>
-                      </div>
-                      <div className={`${styles.message} ${styles.receiver}`}>
-                        <h4>No Message</h4>
-                      </div>
-                    </Col>
-                  </div>
+                <div>
+                  <img src={iconMenu} alt="Menu" onClick={toggleShowA} />
                 </div>
-              );
-            })}
-          </Col>
+              </div>
+              <Toast show={showA} onClose={toggleShowA} className={styles.menu}>
+                <Menu throwData={(data) => StateSettings(data)} />
+              </Toast>
+              <div className={styles.search}>
+                <div>
+                  <img src={iconSearch} alt="Search" />
+                  <input type="search" placeholder="Type your message..." />
+                </div>
+                <img src={iconPlus} alt="" />
+              </div>
+
+              {props.chatList.data.map((item, index) => {
+                return (
+                  <div
+                    className={styles.chat}
+                    key={index}
+                    value={item.user_name}
+                    onClick={() => handleSelectRoomChat(item)}
+                  >
+                    <div className={styles.profile} onClick={toggleShowB}>
+                      {item.user_image.length > 0 ? (
+                        <img src={item.user_image} alt="" />
+                      ) : (
+                        <img src={imgDefault} alt="" />
+                      )}
+
+                      <Col>
+                        <div className={styles.nameUser}>
+                          <h5>{item.user_name}</h5>
+                          <h6>00:00</h6>
+                        </div>
+                        <div className={`${styles.message} ${styles.receiver}`}>
+                          <h4>No Message</h4>
+                        </div>
+                      </Col>
+                    </div>
+                  </div>
+                );
+              })}
+            </Col>
+          )}
+
           {showB === false ? (
             <Col md={8} className={styles.coloumn2}>
               Please select a chat to start messaging
@@ -329,7 +339,10 @@ function Chat(props) {
 
           <Col md={3} className={styles.contactInfo}>
             <Toast show={showContactInfo} onClose={toggleShowContactInfo}>
-              <ContactInfo />
+              <ContactInfo
+                receiverData={dataReceiver}
+                userOnline={userOnline}
+              />
             </Toast>
           </Col>
         </Row>

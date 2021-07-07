@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Container, Form, Card } from "react-bootstrap";
+import { Button, Container, Form, Card, Spinner } from "react-bootstrap";
 import styles from "./Register.module.css";
 import logoGoogle from "../../../assets/img/Logo google.png";
 import imgBack from "../../../assets/img/back.png";
@@ -11,6 +11,7 @@ function Register(props) {
   const [form, setForm] = useState({
     userName: "",
     userEmail: "",
+    userPhone: "",
     userPassword: "",
   });
 
@@ -67,6 +68,7 @@ function Register(props) {
                 required
               />
             </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label className={styles.label}>Email</Form.Label>
               <Form.Control
@@ -75,6 +77,19 @@ function Register(props) {
                 name="userEmail"
                 placeholder="Enter Your Email"
                 value={form.userEmail}
+                onChange={(event) => changeText(event)}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label className={styles.label}>Phone Number</Form.Label>
+              <Form.Control
+                className={styles.input}
+                type="number"
+                name="userPhone"
+                placeholder="Enter Your Email"
+                value={form.userPhone}
                 onChange={(event) => changeText(event)}
                 required
               />
@@ -92,8 +107,24 @@ function Register(props) {
                 required
               />
             </Form.Group>
-            <Button className={styles.button} variant="primary" type="submit">
-              Register
+            <Button
+              style={
+                props.auth.isLoading
+                  ? { cursor: "not-allowed", pointerEvents: "none" }
+                  : {}
+              }
+              className={styles.button}
+              variant="primary"
+              type="submit"
+            >
+              {props.auth.isLoading ? (
+                <Spinner
+                  style={{ width: "20px", height: "20px" }}
+                  animation="border"
+                />
+              ) : (
+                "Register"
+              )}
             </Button>
           </Form>
           <h2 className={styles.loginWith}>Register with</h2>
