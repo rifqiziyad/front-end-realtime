@@ -84,6 +84,7 @@ function Settings(props) {
         .patch(`user/image/${dataUser.user_id}`, formData)
         .then(() => {
           getDataUser();
+          setIsupdate(!isUpdate);
         })
         .catch((err) => {
           return err.response;
@@ -97,6 +98,7 @@ function Settings(props) {
         .patch(`user/image/${dataUser.user_id}`, "")
         .then(() => {
           getDataUser();
+          setIsupdate(!isUpdate);
         })
         .catch((err) => {
           return err.response;

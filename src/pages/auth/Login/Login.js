@@ -73,7 +73,7 @@ function Login(props) {
                 required
               />
             </Form.Group>
-            <h6>Forgot password?</h6>
+            {/* <h6>Forgot password?</h6> */}
             <Button className={styles.button} variant="primary" type="submit">
               Login
             </Button>

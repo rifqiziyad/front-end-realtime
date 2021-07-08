@@ -1,11 +1,24 @@
+@media only screen and (max-width: 600px) {
+  .menu {
+    width: 40% !important;
+  }
+}
+
 @import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap");
+
+.toastNotif {
+  position: absolute;
+  margin: 40px 30px;
+  background-color: #7e98df;
+  color: white;
+}
 
 .containerMain {
   font-family: "Rubik", sans-serif;
 }
 
 .coloumn1 {
-  padding: 0 30px;
+  padding: 15px 30px;
 }
 
 .navbar {
@@ -14,6 +27,7 @@
   justify-content: space-between;
   margin: 15px 0;
   box-sizing: border-box;
+  padding: 10px 0;
 }
 
 .navbar div {
@@ -73,6 +87,8 @@
   font-weight: 800;
   font-size: 29px;
   color: #7e98df;
+  margin: 0;
+  padding: 0;
 }
 
 .search {
@@ -93,6 +109,16 @@
 
 .search div img {
   margin: 0 0 0 20px;
+}
+
+.search .addContact {
+  padding: 10px;
+}
+
+.search .addContact:hover {
+  background-color: rgb(218, 218, 218);
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .search input {
@@ -130,6 +156,7 @@ input[type="search"]:focus {
   width: 13%;
   margin-right: 20px;
   border-radius: 15px;
+  border: rgb(209, 209, 209) solid 1px;
 }
 
 .chat h5 {

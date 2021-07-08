@@ -22,7 +22,7 @@ function ContactInfo(props) {
       <div className={styles.info}>
         <h5>{props.receiverData.user_name}</h5>
         <h6>
-          {props.userOnline.includes(props.receiverData.user_id)
+          {props.userOnline.includes(parseInt(props.receiverData.user_id))
             ? "Online"
             : "Offline"}
         </h6>

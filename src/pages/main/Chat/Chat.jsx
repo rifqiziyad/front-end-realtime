@@ -50,7 +50,7 @@ function Chat(props) {
   };
 
   useEffect(() => {
-    props.roomChat(sessionStorage.getItem("userid"));
+    props.roomChat(sessionStorage.getItem("userid"), "");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -75,6 +75,7 @@ function Chat(props) {
     });
     props.socket.on("notification", (data) => {
       setNotif(data);
+      console.log(data);
     });
     props.socket.on("typing", (data) => {
       setTyping(data);
@@ -164,6 +165,11 @@ function Chat(props) {
     setIsSetting(data);
   };
 
+  const handleSearch = (e) => {
+    const search = e.target.value;
+    props.roomChat(sessionStorage.getItem("userid"), search);
+  };
+
   return (
     <>
       <Container fluid className={styles.containerMain}>
@@ -172,6 +178,7 @@ function Chat(props) {
           show={notif.show}
           delay={5000}
           autohide
+          className={styles.toastNotif}
         >
           <Toast.Header closeButton={false}>
             <strong className="me-auto">Lelegram App ({notif.username})</strong>
@@ -199,45 +206,56 @@ function Chat(props) {
               <div className={styles.search}>
                 <div>
                   <img src={iconSearch} alt="Search" />
-                  <input type="search" placeholder="Type your message..." />
+                  <input
+                    type="search"
+                    placeholder="Type your message..."
+                    name="search"
+                    onChange={(e) => handleSearch(e)}
+                  />
                 </div>
-                <img src={iconPlus} alt="" />
+                <img src={iconPlus} alt="" className={styles.addContact} />
               </div>
 
-              {props.chatList.data.map((item, index) => {
-                return (
-                  <div
-                    className={styles.chat}
-                    key={index}
-                    value={item.user_name}
-                    onClick={() => handleSelectRoomChat(item)}
-                  >
-                    <div className={styles.profile} onClick={toggleShowB}>
-                      {item.user_image.length > 0 ? (
-                        <img
-                          src={
-                            "http://localhost:3003/backend3/api/" +
-                            item.user_image
-                          }
-                          alt=""
-                        />
-                      ) : (
-                        <img src={imgDefault} alt="" />
-                      )}
+              {props.chatList.data.length <= 0 ? (
+                <h2 style={{ textAlign: "center" }}>Tidak ada pesan</h2>
+              ) : (
+                props.chatList.data.map((item, index) => {
+                  return (
+                    <div
+                      className={styles.chat}
+                      key={index}
+                      value={item.user_name}
+                      onClick={() => handleSelectRoomChat(item)}
+                    >
+                      <div className={styles.profile} onClick={toggleShowB}>
+                        {item.user_image.length > 0 ? (
+                          <img
+                            src={
+                              "http://localhost:3003/backend3/api/" +
+                              item.user_image
+                            }
+                            alt=""
+                          />
+                        ) : (
+                          <img src={imgDefault} alt="" />
+                        )}
 
-                      <Col>
-                        <div className={styles.nameUser}>
-                          <h5>{item.user_name}</h5>
-                          <h6>00:00</h6>
-                        </div>
-                        <div className={`${styles.message} ${styles.receiver}`}>
-                          <h4>No Message</h4>
-                        </div>
-                      </Col>
+                        <Col>
+                          <div className={styles.nameUser}>
+                            <h5>{item.user_name}</h5>
+                            <h6>00:00</h6>
+                          </div>
+                          <div
+                            className={`${styles.message} ${styles.receiver}`}
+                          >
+                            <h4>No Message</h4>
+                          </div>
+                        </Col>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              )}
             </Col>
           )}
 
