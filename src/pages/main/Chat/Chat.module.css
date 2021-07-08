@@ -128,9 +128,8 @@ input[type="search"]:focus {
 
 .chat img {
   width: 13%;
-  height: 13%;
   margin-right: 20px;
-  border-radius: 20px;
+  border-radius: 15px;
 }
 
 .chat h5 {

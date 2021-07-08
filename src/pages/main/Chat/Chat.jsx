@@ -164,8 +164,6 @@ function Chat(props) {
     setIsSetting(data);
   };
 
-  console.log(isSettings);
-
   return (
     <>
       <Container fluid className={styles.containerMain}>
@@ -191,8 +189,8 @@ function Chat(props) {
               <div className={styles.navbar}>
                 <h2>Lelegram</h2>
 
-                <div>
-                  <img src={iconMenu} alt="Menu" onClick={toggleShowA} />
+                <div onClick={toggleShowA}>
+                  <img src={iconMenu} alt="Menu" />
                 </div>
               </div>
               <Toast show={showA} onClose={toggleShowA} className={styles.menu}>
@@ -216,7 +214,13 @@ function Chat(props) {
                   >
                     <div className={styles.profile} onClick={toggleShowB}>
                       {item.user_image.length > 0 ? (
-                        <img src={item.user_image} alt="" />
+                        <img
+                          src={
+                            "http://localhost:3003/backend3/api/" +
+                            item.user_image
+                          }
+                          alt=""
+                        />
                       ) : (
                         <img src={imgDefault} alt="" />
                       )}
@@ -270,7 +274,7 @@ function Chat(props) {
                           </p>
                         ) : (
                           <p>
-                            {userOnline.includes(dataReceiver.user_id)
+                            {userOnline.includes(parseInt(dataReceiver.user_id))
                               ? "Online"
                               : "Offline"}
                           </p>

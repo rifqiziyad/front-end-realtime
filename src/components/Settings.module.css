@@ -40,9 +40,15 @@
 }
 
 .image {
-  width: 20%;
-  margin: 0 auto 20px auto;
+  width: 70px;
+  height: 70px;
+  margin: auto;
   border-radius: 20px;
+  border: rgb(211, 211, 211) solid 1px;
+}
+
+.photoProfile {
+  margin-bottom: 20px;
 }
 
 .profile {
@@ -67,7 +73,6 @@
   padding: 10px 0;
   font-weight: 900;
   font-size: 19px;
-  color: #232323;
 }
 
 .username h4,
@@ -99,19 +104,52 @@ h5 {
 }
 
 .changePassword,
-.logout {
+.logout,
+.update,
+.submitUpdate {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 5px 0;
+}
+
+.buttonUpdate {
+  width: 100%;
+  display: flex;
+}
+
+.cancel,
+.submit {
+  width: 50%;
+}
+
+.submit {
+  margin-right: 10px;
+}
+
+.cancel {
+  background-color: red;
+  border: none;
+  border-radius: 10px;
+  color: white;
+}
+
+.update div {
+  display: flex;
+  align-items: center;
 }
 
 .changePassword img,
-.logout img {
+.logout img,
+.update img,
+.submit img {
   margin-right: 15px;
+  width: 5%;
 }
 
 .changePassword h2,
-.logout h2 {
+.logout h2,
+.update h2,
+.submit h2 {
   color: black;
   padding: 0;
   margin-top: 7px;
@@ -119,11 +157,89 @@ h5 {
 
 .changePassword:hover,
 .logout:hover,
+.update:hover,
+.update:hover div,
+.update h2:hover,
 .changePassword h2:hover,
 .logout h2:hover {
   background-color: rgb(214, 214, 214);
-  border-radius: 20px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   cursor: pointer;
+}
+
+.submitUpdate:hover {
+  background-color: white;
+}
+
+.info input,
+.username input,
+.bio input {
+  border: none;
+  border-bottom: black solid 1px;
+  width: 100%;
+  outline: none;
+  font-weight: 900;
+}
+
+.photoProfile {
+  display: flex;
+  flex-direction: column;
+}
+
+.photoProfile .updatePhoto img {
+  width: 30%;
+  padding: 5px;
+}
+
+.photoProfile .updatePhoto {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+  margin: auto;
+  margin-top: 10px;
+}
+
+.edit {
+  display: flex;
+}
+
+.edit img {
+  width: 40% !important;
+}
+
+.edit input {
+  border: black solid 1px !important;
+}
+
+.edit img:hover {
+  background-color: rgb(211, 211, 211);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.photoProfile .updatePhoto img:hover {
+  background-color: rgb(211, 211, 211);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.submit {
+  background-color: rgb(0, 86, 247);
+  border-radius: 10px;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  padding: 10px;
+  color: white;
+}
+
+.submit:hover {
+  background-color: rgb(0, 49, 141);
+}
+
+.cancel:hover {
+  background-color: rgb(143, 0, 0);
 }
