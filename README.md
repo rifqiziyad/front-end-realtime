@@ -7,7 +7,7 @@
     <a href="https://github.com/rifqiziyad/front-end-realtime/pulls">Request Feature</a>
   </p>
 
-![Image Banner](src/assets/img/banner.png)
+![Image Banner](src/assets/img/banner.PNG)
 
 ## About The Project
 
