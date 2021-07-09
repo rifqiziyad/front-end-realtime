@@ -1,6 +1,6 @@
 import imgDefault from "../assets/img/profileDefault.png";
 import styles from "./Settings.module.css";
-import iconChangePassword from "../assets/img/iconChangePassword.png";
+// import iconChangePassword from "../assets/img/iconChangePassword.png";
 import iconLogout from "../assets/img/iconLogout.png";
 import iconPrev from "../assets/img/back.png";
 import iconUpdate from "../assets/img/iconUpdate.png";
@@ -32,9 +32,11 @@ function Settings(props) {
   };
 
   const handleLogout = () => {
-    props.socket.emit("disconnect-server", sessionStorage.getItem("userid"));
-    sessionStorage.clear();
-    props.history.push("/login");
+    if (window.confirm("sure you want to logout ?") === true) {
+      props.socket.emit("disconnect-server", sessionStorage.getItem("userid"));
+      sessionStorage.clear();
+      props.history.push("/login");
+    }
   };
 
   const manipulationDataSetting = () => {
@@ -62,7 +64,7 @@ function Settings(props) {
           alert("Update data success");
         })
         .catch((err) => {
-          return err.response.data.msg;
+          alert(err.response.data.msg);
         });
       setIsupdate(!isUpdate);
     } else {
@@ -87,7 +89,7 @@ function Settings(props) {
           setIsupdate(!isUpdate);
         })
         .catch((err) => {
-          return err.response;
+          alert(err.response.data.msg);
         });
     }
   };
@@ -117,6 +119,7 @@ function Settings(props) {
   const handleCancel = (event) => {
     event.preventDefault();
     setIsupdate(!isUpdate);
+    getDataUser();
   };
 
   return (
@@ -162,7 +165,7 @@ function Settings(props) {
             ""
           )}
         </div>
-        <h5>{dataUser.user_name}</h5>
+        <h5>{dataUser.user_name ? dataUser.user_name : "-"}</h5>
         {dataUser.username ? <h6>@{dataUser.username}</h6> : <h6>@-</h6>}
 
         <hr />
@@ -180,7 +183,7 @@ function Settings(props) {
               onChange={(event) => changeText(event)}
             />
           ) : (
-            <h3>{dataUser.user_name}</h3>
+            <h3>{dataUser.user_name ? dataUser.user_name : "-"}</h3>
           )}
         </div>
 
@@ -251,11 +254,6 @@ function Settings(props) {
           )}
         </div>
       </form>
-
-      <div className={styles.changePassword}>
-        <img src={iconChangePassword} alt="" />
-        <h2>Change Password</h2>
-      </div>
 
       <div className={styles.logout} onClick={handleLogout}>
         <img src={iconLogout} alt="" />

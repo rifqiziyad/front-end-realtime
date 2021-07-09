@@ -1,14 +1,11 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Container, Row, Col, Toast } from "react-bootstrap";
+import { Container, Row, Col, Toast, Modal, Button } from "react-bootstrap";
 import styles from "./Chat.module.css";
 import iconMenu from "../../../assets/img/Menu.png";
 import iconSearch from "../../../assets/img/Search.png";
 import iconPlus from "../../../assets/img/Plus.png";
 import iconPrev from "../../../assets/img/back.png";
-// import photoProfile from "../../../assets/img/photo-profile.svg";
-// import checkListRead from "../../../assets/img/check-list-read.png";
-// import checkListNotRead from "../../../assets/img/check-list-not-read.png";
 import imgDefault from "../../../assets/img/profileDefault.png";
 import profileMenu from "../../../assets/img/Profile menu.svg";
 import iconSmile from "../../../assets/img/iconSmile.png";
@@ -17,7 +14,6 @@ import { chat } from "..//../../redux/action/chat";
 import Menu from "../../../components/Menu";
 import ContactInfo from "../../../components/ContactInfo";
 import Settings from "../../../components/Settings";
-
 import { connect } from "react-redux";
 import axiosApiIntances from "../../../utils/axios";
 
@@ -27,6 +23,7 @@ function Chat(props) {
   const [showA, setShowA] = useState(false);
   const [showB, setShowB] = useState(false);
   const [showContactInfo, setShowContactInfo] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
   const [connectedRooms, setConnectedRooms] = useState({
@@ -38,6 +35,7 @@ function Chat(props) {
   const [notif, setNotif] = useState({ show: false });
   const [typing, setTyping] = useState({ isTyping: false });
   const [isSettings, setIsSetting] = useState(false);
+  const [friendData, setFriendData] = useState([]);
 
   const toggleShowA = () => {
     setShowA(!showA);
@@ -47,6 +45,9 @@ function Chat(props) {
   };
   const toggleShowContactInfo = () => {
     setShowContactInfo(!showContactInfo);
+  };
+  const handleShowModal = () => {
+    setShowModal(!showModal);
   };
 
   useEffect(() => {
@@ -75,7 +76,6 @@ function Chat(props) {
     });
     props.socket.on("notification", (data) => {
       setNotif(data);
-      console.log(data);
     });
     props.socket.on("typing", (data) => {
       setTyping(data);
@@ -161,13 +161,36 @@ function Chat(props) {
       });
   };
 
-  const StateSettings = (data) => {
-    setIsSetting(data);
-  };
-
   const handleSearch = (e) => {
     const search = e.target.value;
     props.roomChat(sessionStorage.getItem("userid"), search);
+  };
+
+  const handleSearchInviteFriend = (e) => {
+    let search = e.target.value;
+    if (search === "") {
+      setFriendData([]);
+    } else {
+      const userId = sessionStorage.getItem("userid");
+      axiosApiIntances
+        .get(`contact?id=${userId}&search=${search}`)
+        .then((res) => {
+          setFriendData(res.data.data);
+        })
+        .catch((err) => {
+          return err.reponse;
+        });
+    }
+  };
+
+  const captureSettings = (data) => {
+    setIsSetting(data);
+    setShowA(false);
+  };
+
+  const captureInviteFiend = (data) => {
+    setShowModal(data);
+    setShowA(!showA);
   };
 
   return (
@@ -189,7 +212,10 @@ function Chat(props) {
         <Row>
           {isSettings ? (
             <Col md={4} className={styles.settings}>
-              <Settings {...props} throwData={(data) => StateSettings(data)} />
+              <Settings
+                {...props}
+                throwData={(data) => captureSettings(data)}
+              />
             </Col>
           ) : (
             <Col md={4} className={styles.coloumn1}>
@@ -201,19 +227,31 @@ function Chat(props) {
                 </div>
               </div>
               <Toast show={showA} onClose={toggleShowA} className={styles.menu}>
-                <Menu throwData={(data) => StateSettings(data)} />
+                <Menu
+                  throwData={(data) => {
+                    captureSettings(data);
+                  }}
+                  throwDataInviteFriend={(data) => {
+                    captureInviteFiend(data);
+                  }}
+                />
               </Toast>
               <div className={styles.search}>
                 <div>
                   <img src={iconSearch} alt="Search" />
                   <input
                     type="search"
-                    placeholder="Type your message..."
+                    placeholder="Type your contact..."
                     name="search"
                     onChange={(e) => handleSearch(e)}
                   />
                 </div>
-                <img src={iconPlus} alt="" className={styles.addContact} />
+                <img
+                  src={iconPlus}
+                  alt=""
+                  className={styles.addContact}
+                  onClick={handleShowModal}
+                />
               </div>
 
               {props.chatList.data.length <= 0 ? (
@@ -225,9 +263,12 @@ function Chat(props) {
                       className={styles.chat}
                       key={index}
                       value={item.user_name}
-                      onClick={() => handleSelectRoomChat(item)}
+                      onClick={() => {
+                        handleSelectRoomChat(item);
+                        toggleShowB();
+                      }}
                     >
-                      <div className={styles.profile} onClick={toggleShowB}>
+                      <div className={styles.profile}>
                         {item.user_image.length > 0 ? (
                           <img
                             src={
@@ -240,9 +281,9 @@ function Chat(props) {
                           <img src={imgDefault} alt="" />
                         )}
 
-                        <Col>
+                        <h5>{item.user_name}</h5>
+                        {/* <Col>
                           <div className={styles.nameUser}>
-                            <h5>{item.user_name}</h5>
                             <h6>00:00</h6>
                           </div>
                           <div
@@ -250,7 +291,7 @@ function Chat(props) {
                           >
                             <h4>No Message</h4>
                           </div>
-                        </Col>
+                        </Col> */}
                       </div>
                     </div>
                   );
@@ -369,6 +410,57 @@ function Chat(props) {
           </Col>
         </Row>
       </Container>
+
+      <Modal show={showModal} onHide={handleShowModal} centered>
+        <Modal.Body>
+          <div className={styles.search}>
+            <div>
+              <img src={iconSearch} alt="Search" />
+              <input
+                type="search"
+                placeholder="Search contact name or phone number"
+                name="search"
+                onChange={(e) => handleSearchInviteFriend(e)}
+              />
+            </div>
+          </div>
+          {friendData.map((item, index) => {
+            return (
+              <div
+                className={styles.chat}
+                key={index}
+                value={item.user_name}
+                onClick={() => handleSelectRoomChat(item)}
+              >
+                <div className={styles.profile} onClick={toggleShowB}>
+                  {item.user_image.length > 0 ? (
+                    <img
+                      src={
+                        "http://localhost:3003/backend3/api/" + item.user_image
+                      }
+                      alt=""
+                    />
+                  ) : (
+                    <img src={imgDefault} alt="" />
+                  )}
+
+                  <div className={styles.nameUser}>
+                    <h5>{item.user_name}</h5>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleShowModal}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={handleShowModal}>
+            Add Contact
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }

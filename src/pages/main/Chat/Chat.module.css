@@ -139,6 +139,8 @@ input[type="search"]:focus {
   position: relative;
   border-bottom: rgb(204, 203, 203) solid 1px;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .chat:hover {
@@ -153,7 +155,8 @@ input[type="search"]:focus {
 }
 
 .chat img {
-  width: 13%;
+  width: 50px;
+  height: 50px;
   margin-right: 20px;
   border-radius: 15px;
   border: rgb(209, 209, 209) solid 1px;
@@ -162,6 +165,9 @@ input[type="search"]:focus {
 .chat h5 {
   font-size: 15px;
   padding: 0;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
 }
 
 .chat .nameUser {
@@ -300,6 +306,7 @@ input[type="search"]:focus {
   height: 81.5%;
   overflow-y: scroll;
   padding: 20px 50px;
+  background-image: url("../../../assets//img//double-bubble.png");
 }
 
 .messages div {
