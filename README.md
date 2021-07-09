@@ -1,6 +1,6 @@
 <h1 align='center'>React JS - Lelegram</h1>
   <p align="center">
-    <a href="link_deploy">View Demo</a>
+    <a href="https://lelegram.netlify.app">View Demo</a>
     ·
     <a href="https://github.com/rifqiziyad/front-end-realtime/issues">Report Bug</a>
     ·
