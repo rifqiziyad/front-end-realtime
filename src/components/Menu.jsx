@@ -14,13 +14,17 @@ function Menu(props) {
     props.throwDataInviteFriend(true);
   };
 
+  const manipulationDataContact = () => {
+    props.throwDataContact(true);
+  };
+
   return (
     <>
       <div className={styles.icon} onClick={manipulationDataSetting}>
         <img src={iconSetting} alt="" />
         <p>Setings</p>
       </div>
-      <div className={styles.icon}>
+      <div className={styles.icon} onClick={manipulationDataContact}>
         <img src={iconContact} alt="" />
         <p>Contacts</p>
       </div>

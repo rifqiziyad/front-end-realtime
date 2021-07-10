@@ -2,6 +2,13 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Toast, Modal, Button } from "react-bootstrap";
 import styles from "./Chat.module.css";
+import axiosApiIntances from "../../../utils/axios";
+import { roomChat } from "..//../../redux/action/roomChat";
+import { chat } from "..//../../redux/action/chat";
+import { connect } from "react-redux";
+import Menu from "../../../components/Menu";
+import ContactInfo from "../../../components/ContactInfo";
+import Settings from "../../../components/Settings";
 import iconMenu from "../../../assets/img/Menu.png";
 import iconSearch from "../../../assets/img/Search.png";
 import iconPlus from "../../../assets/img/Plus.png";
@@ -9,13 +16,7 @@ import iconPrev from "../../../assets/img/back.png";
 import imgDefault from "../../../assets/img/profileDefault.png";
 import profileMenu from "../../../assets/img/Profile menu.svg";
 import iconSmile from "../../../assets/img/iconSmile.png";
-import { roomChat } from "..//../../redux/action/roomChat";
-import { chat } from "..//../../redux/action/chat";
-import Menu from "../../../components/Menu";
-import ContactInfo from "../../../components/ContactInfo";
-import Settings from "../../../components/Settings";
-import { connect } from "react-redux";
-import axiosApiIntances from "../../../utils/axios";
+import iconChat from "../../../assets/img/iconChat.png";
 
 function Chat(props) {
   const userId = sessionStorage.getItem("userid");
@@ -36,22 +37,37 @@ function Chat(props) {
   const [typing, setTyping] = useState({ isTyping: false });
   const [isSettings, setIsSetting] = useState(false);
   const [friendData, setFriendData] = useState([]);
+  const [search, setSearch] = useState("");
+  const [isContact, setIsContact] = useState(false);
 
   const toggleShowA = () => {
     setShowA(!showA);
   };
+
   const toggleShowB = () => {
     setShowB(!showB);
+  };
+
+  const toggleShowChat = (data) => {
+    console.log(data);
+    const roomChat = data.room_chat;
+    if (connectedRooms.room !== roomChat) {
+      setShowB(true);
+    } else {
+      setShowB(!showB);
+    }
   };
   const toggleShowContactInfo = () => {
     setShowContactInfo(!showContactInfo);
   };
   const handleShowModal = () => {
     setShowModal(!showModal);
+    setFriendData([]);
   };
 
   useEffect(() => {
-    props.roomChat(sessionStorage.getItem("userid"), "");
+    props.roomChat(sessionStorage.getItem("userid"));
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -62,7 +78,6 @@ function Chat(props) {
       });
       connect();
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.socket, messages]);
 
@@ -162,25 +177,44 @@ function Chat(props) {
   };
 
   const handleSearch = (e) => {
-    const search = e.target.value;
-    props.roomChat(sessionStorage.getItem("userid"), search);
+    const searchRoomChat = e.target.value;
+    props.roomChat(sessionStorage.getItem("userid"), searchRoomChat);
   };
 
   const handleSearchInviteFriend = (e) => {
-    let search = e.target.value;
-    if (search === "") {
+    setSearch(e.target.value);
+    if (e.target.value === "") {
       setFriendData([]);
     } else {
-      const userId = sessionStorage.getItem("userid");
-      axiosApiIntances
-        .get(`contact?id=${userId}&search=${search}`)
-        .then((res) => {
-          setFriendData(res.data.data);
-        })
-        .catch((err) => {
-          return err.reponse;
-        });
+      getFriendData(e.target.value);
     }
+  };
+
+  const handleSearchContact = (e) => {
+    setSearch(e.target.value);
+    getAllContact(e.target.value);
+  };
+
+  const getAllContact = (search) => {
+    axiosApiIntances
+      .get(`contact/all-contact?id=${userId}&search=${search}`)
+      .then((res) => {
+        setFriendData(res.data.data);
+      })
+      .catch((err) => {
+        alert(err.response);
+      });
+  };
+
+  const getFriendData = (search) => {
+    axiosApiIntances
+      .get(`contact?id=${userId}&search=${search}`)
+      .then((res) => {
+        setFriendData(res.data.data);
+      })
+      .catch((err) => {
+        return err.reponse;
+      });
   };
 
   const captureSettings = (data) => {
@@ -191,6 +225,50 @@ function Chat(props) {
   const captureInviteFiend = (data) => {
     setShowModal(data);
     setShowA(!showA);
+    setIsContact(false);
+  };
+
+  const captureContact = (data) => {
+    setShowModal(data);
+    setShowA(!showA);
+    setIsContact(true);
+    getAllContact("");
+  };
+
+  const createContact = (data) => {
+    const setData = {
+      userId,
+      friendId: data.user_id,
+    };
+    if (window.confirm(`Tambahkan ${data.user_name} ?`) === true) {
+      axiosApiIntances
+        .post("contact", setData)
+        .then(() => {
+          getFriendData(search);
+          alert("Add contact successful");
+        })
+        .catch((err) => {
+          alert(err.response);
+        });
+    }
+  };
+
+  const createRoomChat = (id) => {
+    // eslint-disable-next-line array-callback-return
+
+    const Id = `${id}`;
+    if (props.chatList.data.filter((e) => e.user_id === Id).length) {
+      return {};
+    } else {
+      axiosApiIntances
+        .post("/room-chat", { userId, friendId: Id })
+        .then((res) => {
+          return res;
+        })
+        .catch((err) => {
+          return err;
+        });
+    }
   };
 
   return (
@@ -234,6 +312,9 @@ function Chat(props) {
                   throwDataInviteFriend={(data) => {
                     captureInviteFiend(data);
                   }}
+                  throwDataContact={(data) => {
+                    captureContact(data);
+                  }}
                 />
               </Toast>
               <div className={styles.search}>
@@ -246,12 +327,6 @@ function Chat(props) {
                     onChange={(e) => handleSearch(e)}
                   />
                 </div>
-                <img
-                  src={iconPlus}
-                  alt=""
-                  className={styles.addContact}
-                  onClick={handleShowModal}
-                />
               </div>
 
               {props.chatList.data.length <= 0 ? (
@@ -265,7 +340,7 @@ function Chat(props) {
                       value={item.user_name}
                       onClick={() => {
                         handleSelectRoomChat(item);
-                        toggleShowB();
+                        toggleShowChat(item);
                       }}
                     >
                       <div className={styles.profile}>
@@ -282,16 +357,6 @@ function Chat(props) {
                         )}
 
                         <h5>{item.user_name}</h5>
-                        {/* <Col>
-                          <div className={styles.nameUser}>
-                            <h6>00:00</h6>
-                          </div>
-                          <div
-                            className={`${styles.message} ${styles.receiver}`}
-                          >
-                            <h4>No Message</h4>
-                          </div>
-                        </Col> */}
                       </div>
                     </div>
                   );
@@ -411,53 +476,82 @@ function Chat(props) {
         </Row>
       </Container>
 
-      <Modal show={showModal} onHide={handleShowModal} centered>
+      <Modal
+        show={showModal}
+        onHide={handleShowModal}
+        centered
+        className={styles.modalAddFriend}
+      >
         <Modal.Body>
+          <h3>{isContact ? "Contact" : "Invite Friend"}</h3>
           <div className={styles.search}>
             <div>
               <img src={iconSearch} alt="Search" />
               <input
                 type="search"
-                placeholder="Search contact name or phone number"
+                placeholder="Search contact name"
                 name="search"
-                onChange={(e) => handleSearchInviteFriend(e)}
+                onChange={
+                  isContact
+                    ? (e) => handleSearchContact(e)
+                    : (e) => handleSearchInviteFriend(e)
+                }
               />
             </div>
           </div>
-          {friendData.map((item, index) => {
-            return (
-              <div
-                className={styles.chat}
-                key={index}
-                value={item.user_name}
-                onClick={() => handleSelectRoomChat(item)}
-              >
-                <div className={styles.profile} onClick={toggleShowB}>
-                  {item.user_image.length > 0 ? (
-                    <img
-                      src={
-                        "http://localhost:3003/backend3/api/" + item.user_image
-                      }
-                      alt=""
-                    />
-                  ) : (
-                    <img src={imgDefault} alt="" />
-                  )}
+          <div className={styles.containerAddContact}>
+            {friendData.length <= 0 ? (
+              <h2
+                style={{ textAlign: "center" }}
+              >{`Nama ${search} tidak ditemukan`}</h2>
+            ) : (
+              friendData.map((item, index) => {
+                return (
+                  <div className={styles.addFriendContact} key={index}>
+                    <div className={styles.addFriend} onClick={toggleShowB}>
+                      {item.user_image.length > 0 ? (
+                        <img
+                          src={
+                            "http://localhost:3003/backend3/api/" +
+                            item.user_image
+                          }
+                          alt=""
+                        />
+                      ) : (
+                        <img src={imgDefault} alt="" />
+                      )}
 
-                  <div className={styles.nameUser}>
-                    <h5>{item.user_name}</h5>
+                      <h5>{item.user_name}</h5>
+                    </div>
+                    {parseInt(item.friend_id) === parseInt(userId) ||
+                    isContact ? (
+                      <img
+                        src={iconChat}
+                        alt=""
+                        className={styles.iconChat}
+                        onClick={() => {
+                          handleSelectRoomChat(item);
+                          handleShowModal();
+                          createRoomChat(item.friend_id);
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src={iconPlus}
+                        alt=""
+                        className={styles.iconAdd}
+                        onClick={() => createContact(item)}
+                      />
+                    )}
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })
+            )}
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleShowModal}>
             Cancel
-          </Button>
-          <Button variant="primary" onClick={handleShowModal}>
-            Add Contact
           </Button>
         </Modal.Footer>
       </Modal>

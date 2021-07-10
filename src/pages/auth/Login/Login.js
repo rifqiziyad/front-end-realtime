@@ -21,7 +21,6 @@ function Login(props) {
         props.history.push("/");
       })
       .catch((error) => {
-        console.log(error);
         swal({
           icon: "error",
           title: error.response.data.msg,

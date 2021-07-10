@@ -377,3 +377,61 @@ input[type="search"]:focus {
   padding: 0;
   margin: 0;
 }
+
+.modalAddFriend .search div {
+  width: 100%;
+}
+
+.modalAddFriend h3 {
+  padding: 10px 0 20px 0;
+  color: #7e98df;
+  text-align: center;
+}
+
+.containerAddContact {
+  height: 350px;
+  overflow-y: scroll;
+}
+
+.addFriendContact {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  justify-content: space-between;
+}
+
+.addFriendContact:hover {
+  background-color: #ebebeb;
+  border-radius: 10px;
+}
+
+.addFriend {
+  display: flex;
+}
+
+.addFriend h5 {
+  font-weight: 400;
+}
+
+.addFriend img {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  border: #cacaca solid 1px;
+  margin-right: 20px;
+}
+
+.iconChat,
+.iconAdd {
+  width: 35px;
+  height: 35px;
+  padding: 5px;
+}
+
+.iconChat:hover,
+.iconAdd:hover {
+  background-color: #848484;
+  border-radius: 10px;
+  cursor: pointer;
+}
