@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosApiIntances = axios.create({
-  baseURL: process.env.REACT_APP_BACKEND_URL,
+  baseURL: "https://agile-brushlands-60708.herokuapp.com/backend3/api/v1/",
 });
 
 // Add a request interceptor

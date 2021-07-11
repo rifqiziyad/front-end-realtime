@@ -133,7 +133,10 @@ function Settings(props) {
         <div className={styles.photoProfile}>
           {dataUser.user_image ? (
             <img
-              src={"http://localhost:3003/backend3/api/" + dataUser.user_image}
+              src={
+                "https://agile-brushlands-60708.herokuapp.com/backend3/api/" +
+                dataUser.user_image
+              }
               alt=""
               className={styles.image}
             />

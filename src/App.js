@@ -19,9 +19,12 @@ import io from "socket.io-client";
 function App() {
   const [socket, setSocket] = useState(null);
   const setupSocket = () => {
-    const newSocket = io.connect("http://localhost:3003", {
-      path: "/backend3/socket.io",
-    });
+    const newSocket = io.connect(
+      "https://agile-brushlands-60708.herokuapp.com",
+      {
+        path: "/backend3/socket.io",
+      }
+    );
     newSocket.on("connect", () => {
       console.log("Connect Socket Client !");
     });

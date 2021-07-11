@@ -10,7 +10,7 @@ function ContactInfo(props) {
       {props.receiverData.user_image ? (
         <img
           src={
-            "http://localhost:3003/backend3/api/" +
+            "https://agile-brushlands-60708.herokuapp.com/backend3/api/" +
             props.receiverData.user_image
           }
           alt=""

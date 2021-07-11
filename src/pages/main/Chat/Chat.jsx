@@ -347,7 +347,7 @@ function Chat(props) {
                         {item.user_image.length > 0 ? (
                           <img
                             src={
-                              "http://localhost:3003/backend3/api/" +
+                              "https://agile-brushlands-60708.herokuapp.com/backend3/api/" +
                               item.user_image
                             }
                             alt=""
@@ -382,7 +382,7 @@ function Chat(props) {
                       {dataReceiver.user_image ? (
                         <img
                           src={
-                            "http://localhost:3003/backend3/api/" +
+                            "https://agile-brushlands-60708.herokuapp.com/backend3/api/" +
                             dataReceiver.user_image
                           }
                           alt=""
@@ -512,7 +512,7 @@ function Chat(props) {
                       {item.user_image.length > 0 ? (
                         <img
                           src={
-                            "http://localhost:3003/backend3/api/" +
+                            "https://agile-brushlands-60708.herokuapp.com/backend3/api/" +
                             item.user_image
                           }
                           alt=""
