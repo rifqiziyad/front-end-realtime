@@ -33,7 +33,7 @@ This is a chat website with realtime using Socket.Io.
 4. Add .env file at root folder project
 
 ```
-REACT_APP_BACKEND_URL = [Backend API]
+REACT_APP_BACKEND_URL = localhost:3003/backend3/api/v1/
 ```
 
 5. Type `npm run serve`
