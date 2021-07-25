@@ -4,7 +4,7 @@ import styles from "./Login.module.css";
 import logoGoogle from "../../../assets/img/Logo google.png";
 import { connect } from "react-redux";
 import { login } from "../../../redux/action/auth";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 
 function Login(props) {
   const [form, setForm] = useState({ userEmail: "", userPassword: "" });
@@ -18,15 +18,28 @@ function Login(props) {
         sessionStorage.setItem("token", res.value.data.data.token);
         sessionStorage.setItem("username", res.value.data.data.user_name);
         sessionStorage.setItem("userid", res.value.data.data.user_id);
-        props.history.push("/");
+        Swal.fire({
+          icon: "success",
+          title: res.value.data.msg,
+          confirmButtonText: "Ok",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            props.history.push("/");
+          }
+        });
       })
       .catch((error) => {
-        swal({
+        Swal.fire({
           icon: "error",
           title: error.response.data.msg,
         });
       });
   };
+
+  if (props.auth.isLoading) {
+    Swal.showLoading();
+  }
 
   const changeText = (event) => {
     setForm({
@@ -72,7 +85,6 @@ function Login(props) {
                 required
               />
             </Form.Group>
-            {/* <h6>Forgot password?</h6> */}
             <Button className={styles.button} variant="primary" type="submit">
               Login
             </Button>

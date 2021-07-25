@@ -5,7 +5,7 @@ import logoGoogle from "../../../assets/img/Logo google.png";
 import imgBack from "../../../assets/img/back.png";
 import { connect } from "react-redux";
 import { register } from "../../../redux/action/auth";
-import swal from "sweetalert";
+import Swal from "sweetalert2";
 
 function Register(props) {
   const [form, setForm] = useState({
@@ -19,16 +19,21 @@ function Register(props) {
     event.preventDefault();
     props
       .register(form)
-      .then(() => {
-        swal({
+      .then((res) => {
+        Swal.fire({
           icon: "success",
-          title: "Check Your Email for Verification",
+          title: res.value.data.msg,
+          confirmButtonText: "Ok",
+          allowOutsideClick: false,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            props.history.push("/login");
+          }
         });
-        props.history.push("/login");
       })
       .catch((error) => {
-        swal({
-          icon: "warning",
+        Swal.fire({
+          icon: "error",
           title: error.response.data.msg,
         });
       });
