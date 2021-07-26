@@ -49,7 +49,6 @@ function Chat(props) {
   };
 
   const toggleShowChat = (data) => {
-    console.log(data);
     const roomChat = data.room_chat;
     if (connectedRooms.room !== roomChat) {
       setShowB(true);

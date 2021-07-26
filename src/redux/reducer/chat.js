@@ -26,7 +26,7 @@ const chat = (state = initialState, action) => {
         ...state,
         isLoading: false,
         isError: true,
-        data: {},
+        data: [],
         msg: action.payload.response.data.msg,
       };
     default:
